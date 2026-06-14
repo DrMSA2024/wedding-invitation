@@ -1,0 +1,2031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#FFFCF5" />
+  <title>Anas &amp; Ruhi | Wedding Invitation Management</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Montserrat:wght@300;400;500;600;700&family=Great+Vibes&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js" crossorigin="anonymous" defer></script>
+
+  <style>
+    /* ═══════════════════════════════════════════════════
+       RESET & ROOT
+    ═══════════════════════════════════════════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --rose:        #A35C4A;
+      --rose-dark:   #8B3F2E;
+      --rose-light:  #c4796a;
+      --gold:        #D4AF7A;
+      --gold-light:  #F0DFB8;
+      --sage:        #9CAF88;
+      --sage-dark:   #7A8F64;
+      --ivory:       #FFFCF5;
+      --ivory-dark:  #FDF7F0;
+      --blush:       #F7E9E5;
+      --charcoal:    #2D2A2A;
+      --text-muted:  #7a6b62;
+      --border:      rgba(212,175,122,0.35);
+      --shadow-sm:   0 4px 16px -4px rgba(0,0,0,0.10);
+      --shadow-md:   0 10px 32px -8px rgba(0,0,0,0.12);
+      --shadow-lg:   0 20px 48px -12px rgba(0,0,0,0.15);
+      --radius-sm:   16px;
+      --radius-md:   24px;
+      --radius-lg:   40px;
+      --transition:  all 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
+
+      /* Dark mode overrides */
+      --dm-bg:       #1a1210;
+      --dm-surface:  #251815;
+      --dm-border:   rgba(212,175,122,0.2);
+      --dm-text:     #e8d5c4;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --ivory:      var(--dm-bg);
+        --ivory-dark: var(--dm-surface);
+        --blush:      #2e1c18;
+        --charcoal:   var(--dm-text);
+        --border:     var(--dm-border);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       BASE
+    ═══════════════════════════════════════════════════ */
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--ivory);
+      font-family: 'Montserrat', sans-serif;
+      color: var(--charcoal);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      min-height: 100dvh;
+    }
+
+    /* Background texture */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: radial-gradient(circle at 30% 40%, rgba(212,175,122,0.04) 2%, transparent 2.5%);
+      background-size: 36px 36px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Floating petals ── */
+    #petals-layer {
+      position: fixed; inset: 0;
+      pointer-events: none;
+      z-index: 1;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      border-radius: 80% 0 80% 0;
+      background: linear-gradient(135deg, rgba(163,92,74,.18), rgba(212,175,122,.14));
+      animation: petalDrift var(--pd, 18s) linear var(--pdd, 0s) infinite;
+      transform-origin: center center;
+    }
+    @keyframes petalDrift {
+      0%   { transform: translateY(100vh) rotate(0deg);   opacity: 0; }
+      10%  { opacity: .45; }
+      90%  { opacity: .35; }
+      100% { transform: translateY(-15vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       LAYOUT
+    ═══════════════════════════════════════════════════ */
+    .page-wrap {
+      position: relative;
+      z-index: 10;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 1.5rem clamp(1rem, 3vw, 2rem);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       TOP NAVIGATION BAR
+    ═══════════════════════════════════════════════════ */
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      background: rgba(255,252,245,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0.75rem clamp(1rem,3vw,2rem);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }
+    @media (prefers-color-scheme: dark) {
+      .top-nav { background: rgba(26,18,16,0.92); }
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 9px 22px;
+      min-height: 44px;
+      border-radius: var(--radius-lg);
+      border: 2px solid var(--rose);
+      background: transparent;
+      color: var(--rose);
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .nav-btn.active,
+    .nav-btn:hover {
+      background: var(--rose);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(163,92,74,0.3);
+    }
+    .nav-btn:focus-visible {
+      outline: 3px solid var(--gold);
+      outline-offset: 3px;
+    }
+    #admin-nav-btn { display: none; } /* hidden until secret unlock */
+
+    /* ═══════════════════════════════════════════════════
+       SHARED CARD COMPONENT
+    ═══════════════════════════════════════════════════ */
+    .glass-card {
+      background: rgba(255,252,245,0.95);
+      border-radius: var(--radius-lg);
+      padding: clamp(1.2rem, 3vw, 2rem);
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-md);
+      border: 1px solid var(--border);
+      transition: var(--transition);
+    }
+    @media (prefers-color-scheme: dark) {
+      .glass-card { background: rgba(37,24,21,0.95); }
+    }
+    .glass-card:hover { box-shadow: var(--shadow-lg); }
+
+    /* ═══════════════════════════════════════════════════
+       SECTION TITLES
+    ═══════════════════════════════════════════════════ */
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--rose);
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    .section-title::after {
+      content: '';
+      display: block;
+      width: 70px; height: 3px;
+      background: linear-gradient(90deg, var(--gold), var(--rose));
+      margin: 0.6rem auto 0;
+      border-radius: 2px;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       HERO / WEDDING PAGE
+    ═══════════════════════════════════════════════════ */
+    .hero {
+      min-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      background: linear-gradient(145deg, rgba(255,252,245,0.98), rgba(255,240,235,0.95));
+      border-radius: 0 0 56px 56px;
+      padding: 3rem 1.5rem;
+      margin-bottom: 2.5rem;
+      box-shadow: var(--shadow-sm);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(212,175,122,0.12) 0%, transparent 65%);
+    }
+    .hero-content { position: relative; z-index: 2; }
+
+    .bismillah {
+      font-family: 'Amiri', serif;
+      font-size: clamp(1.6rem, 5vw, 2.4rem);
+      color: var(--gold);
+      margin-bottom: 0.8rem;
+      text-shadow: 0 2px 10px rgba(212,175,122,0.3);
+    }
+    .couple-name {
+      font-family: 'Great Vibes', cursive;
+      font-size: clamp(3rem, 9vw, 5.5rem);
+      color: var(--rose);
+      line-height: 1.1;
+    }
+    .event-dates {
+      font-size: clamp(0.8rem, 2.2vw, 1rem);
+      letter-spacing: 4px;
+      color: var(--sage-dark);
+      margin: 0.5rem 0 1.5rem;
+      text-transform: uppercase;
+    }
+
+    /* ── Countdown ── */
+    .countdown-wrap {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+      background: rgba(255,255,255,0.9);
+      backdrop-filter: blur(8px);
+      border-radius: 60px;
+      padding: 1rem 1.8rem;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+      margin: 0.5rem auto;
+    }
+    .countdown-label-top {
+      font-size: 0.72rem;
+      letter-spacing: 3px;
+      color: var(--rose);
+      text-transform: uppercase;
+      font-weight: 600;
+      width: 100%;
+      text-align: center;
+      margin-bottom: 0.2rem;
+    }
+    .cd-item {
+      background: linear-gradient(135deg, var(--rose), var(--rose-dark));
+      color: #fff;
+      border-radius: 40px;
+      padding: 0.7rem 1.2rem;
+      min-width: 80px;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(163,92,74,0.3);
+    }
+    .cd-number {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      line-height: 1;
+    }
+    .cd-unit {
+      font-size: 0.62rem;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-top: 2px;
+    }
+
+    /* ── Photo cards ── */
+    .photos-row {
+      display: flex;
+      justify-content: center;
+      gap: clamp(2rem, 6vw, 5rem);
+      flex-wrap: wrap;
+      margin: 2rem 0;
+    }
+    .photo-card { text-align: center; }
+    .photo-ring {
+      width: clamp(150px, 30vw, 220px);
+      height: clamp(150px, 30vw, 220px);
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      overflow: hidden;
+      margin: 0 auto 0.8rem;
+      box-shadow: 0 12px 30px rgba(163,92,74,0.2);
+      animation: floatImg 4s ease-in-out infinite;
+      position: relative;
+    }
+    .photo-ring:nth-child(1) { animation-delay: 0.4s; }
+    @keyframes floatImg { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    .photo-ring img { width: 100%; height: 100%; object-fit: cover; }
+    .blur-guard {
+      position: absolute; inset: 0;
+      background: rgba(20,10,10,0.88);
+      backdrop-filter: blur(10px);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      color: var(--gold); cursor: pointer;
+      border-radius: 50%;
+      transition: background 0.3s;
+    }
+    .blur-guard:hover { background: rgba(20,10,10,0.7); }
+    .blur-guard i { font-size: 1.8rem; margin-bottom: 6px; }
+    .photo-name { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--charcoal); }
+    .photo-sub  { font-size: 0.75rem; color: var(--sage-dark); }
+
+    /* ── Celebrations timeline ── */
+    .celebration-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.2rem;
+      margin-top: 1rem;
+    }
+    .cel-item {
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: 1.4rem 1rem;
+      text-align: center;
+      transition: var(--transition);
+      border: 1px solid var(--border);
+    }
+    .cel-item:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .cel-item.highlight { border-top: 4px solid var(--rose); }
+    .cel-icon { font-size: 2.2rem; color: var(--rose); margin-bottom: 0.5rem; }
+    .cel-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--rose); margin-bottom: 0.3rem; }
+    .cel-detail { font-size: 0.78rem; color: var(--text-muted); line-height: 1.65; }
+
+    /* ── Venue cards ── */
+    .venue-grid {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+    .venue-card {
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: 1.4rem 1.2rem;
+      text-align: center;
+      width: clamp(220px, 28vw, 260px);
+      transition: var(--transition);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-sm);
+    }
+    .venue-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+    .venue-card.featured { border: 2px solid var(--rose); }
+    .venue-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--rose), var(--rose-dark));
+      color: #fff;
+      font-size: 0.65rem;
+      padding: 3px 12px;
+      border-radius: 20px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+    }
+    .venue-qr {
+      width: clamp(110px, 22vw, 140px);
+      height: clamp(110px, 22vw, 140px);
+      border-radius: 14px;
+      border: 2px solid var(--gold);
+      display: block;
+      margin: 0 auto 0.7rem;
+    }
+    .venue-name { font-weight: 700; color: var(--rose); font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .venue-addr { font-size: 0.78rem; color: var(--text-muted); line-height: 1.5; }
+
+    /* ── Dua section ── */
+    .dua-block {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      background: linear-gradient(145deg, #fef8f0, #fef0eb);
+      border-radius: 56px;
+      margin: 1.5rem 0;
+    }
+    .dua-arabic  { font-family: 'Amiri', serif; font-size: clamp(1.4rem, 4.5vw, 2rem); color: var(--rose); }
+    .dua-trans   { font-size: 0.85rem; color: var(--text-muted); font-style: italic; margin-top: 0.5rem; }
+
+    /* ── Footer ── */
+    .site-footer {
+      text-align: center;
+      padding: 1.8rem 1rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.8;
+      cursor: default;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       SCROLL REVEAL
+    ═══════════════════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(32px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.in-view { opacity: 1; transform: translateY(0); }
+
+    /* ═══════════════════════════════════════════════════
+       ADMIN LOGIN
+    ═══════════════════════════════════════════════════ */
+    .login-card {
+      max-width: 480px;
+      margin: 3rem auto;
+    }
+    .login-error {
+      display: none;
+      background: #fce4ec;
+      color: #b71c1c;
+      padding: 10px 18px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       FORM ELEMENTS
+    ═══════════════════════════════════════════════════ */
+    .form-group { margin-bottom: 1.1rem; }
+    .form-label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.82rem;
+      color: var(--rose);
+      margin-bottom: 0.45rem;
+    }
+    .form-control {
+      width: 100%;
+      padding: 11px 18px;
+      min-height: 44px;
+      border-radius: 40px;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.88rem;
+      color: var(--charcoal);
+      transition: border-color 0.25s, box-shadow 0.25s;
+    }
+    .form-control:focus {
+      border-color: var(--rose);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(163,92,74,0.12);
+    }
+    @media (prefers-color-scheme: dark) {
+      .form-control { background: #2e1c18; color: var(--dm-text); border-color: var(--dm-border); }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       BUTTONS
+    ═══════════════════════════════════════════════════ */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 10px 26px;
+      min-height: 44px;
+      border-radius: 40px;
+      border: none;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 3px; }
+    .btn-rose  { background: linear-gradient(135deg, var(--rose), var(--rose-dark)); color: #fff; box-shadow: 0 3px 12px rgba(163,92,74,0.28); }
+    .btn-rose:hover { transform: scale(1.02); box-shadow: 0 6px 18px rgba(163,92,74,0.36); }
+    .btn-sage  { background: linear-gradient(135deg, var(--sage), var(--sage-dark)); color: #fff; box-shadow: 0 3px 12px rgba(122,143,100,0.28); }
+    .btn-sage:hover { transform: scale(1.02); }
+    .btn-gold  { background: var(--gold); color: var(--rose-dark); font-weight: 700; }
+    .btn-gold:hover { transform: scale(1.02); }
+    .btn-wa    { background: #25D366; color: #fff; box-shadow: 0 3px 12px rgba(37,211,102,0.28); }
+    .btn-wa:hover { transform: scale(1.02); box-shadow: 0 6px 18px rgba(37,211,102,0.36); }
+    .btn-danger{ background: #c0392b; color: #fff; box-shadow: 0 3px 12px rgba(192,57,43,0.28); }
+    .btn-danger:hover { transform: scale(1.02); }
+    .btn-purple{ background: #7c3aed; color: #fff; box-shadow: 0 3px 12px rgba(124,58,237,0.28); }
+    .btn-purple:hover { transform: scale(1.02); }
+    .btn-sm { padding: 6px 16px; font-size: 0.74rem; min-height: 36px; }
+    .btn-icon { padding: 8px; min-height: 36px; border-radius: 50%; width: 36px; justify-content: center; }
+
+    /* ═══════════════════════════════════════════════════
+       STATISTICS GRID
+    ═══════════════════════════════════════════════════ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 0.9rem;
+      margin: 1rem 0;
+    }
+    .stat-card {
+      background: linear-gradient(135deg, #fff5e8, #ffe6f0);
+      border-radius: var(--radius-md);
+      padding: 1rem 0.8rem;
+      text-align: center;
+      border: 1px solid rgba(212,175,122,0.2);
+      transition: var(--transition);
+    }
+    .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-sm); }
+    .stat-icon   { font-size: 1.6rem; margin-bottom: 0.3rem; }
+    .stat-label  { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; }
+    .stat-value  { font-size: 1.8rem; font-weight: 700; color: var(--rose); font-family: 'Cormorant Garamond', serif; }
+    .stat-sub    { font-size: 0.68rem; color: var(--text-muted); margin-top: 1px; }
+
+    /* Invited-by breakdown */
+    .breakdown-wrap {
+      background: #fff;
+      border-radius: var(--radius-md);
+      padding: 1rem 1.2rem;
+      border: 1px solid var(--border);
+      margin-top: 0.8rem;
+    }
+    .breakdown-title { font-size: 0.78rem; font-weight: 700; color: var(--rose); margin-bottom: 0.7rem; }
+    .breakdown-pills { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .breakdown-pill  {
+      background: var(--blush);
+      color: var(--rose);
+      padding: 3px 12px;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+      border: 1px solid rgba(163,92,74,0.15);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       SEARCH & FILTER BAR
+    ═══════════════════════════════════════════════════ */
+    .search-bar {
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .search-bar .form-control { flex: 1; min-width: 180px; }
+    .search-bar select { min-width: 150px; flex: 0 1 auto; }
+
+    /* ═══════════════════════════════════════════════════
+       GUEST TABLE
+    ═══════════════════════════════════════════════════ */
+    .table-wrap { overflow-x: auto; border-radius: var(--radius-md); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      font-size: 0.8rem;
+    }
+    th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid #f5ece5; white-space: nowrap; }
+    th {
+      background: linear-gradient(135deg, var(--blush), #ffe6f0);
+      color: var(--rose);
+      font-weight: 700;
+      font-size: 0.72rem;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      position: sticky;
+      top: 0;
+    }
+    tbody tr:hover td { background: rgba(247,233,229,0.35); }
+    @media (prefers-color-scheme: dark) {
+      table { background: #2e1c18; }
+      th    { background: #3a1f18; }
+      td    { border-bottom-color: #4a2520; }
+    }
+
+    /* Type badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .badge-nikah     { background: #fce4ec; color: #c2185b; }
+    .badge-reception { background: #e8f5e9; color: #2e7d32; }
+    .badge-both      { background: #e8eaf6; color: #3949ab; }
+    .badge-family    { background: var(--blush); color: var(--rose); }
+    .badge-individual{ background: #f3f4f6; color: #4b5563; }
+
+    /* Status */
+    .status-sent    { color: #27ae60; font-weight: 700; font-size: 0.78rem; }
+    .status-pending { color: #e74c3c; font-weight: 700; font-size: 0.78rem; }
+
+    /* Action icons */
+    .action-icons { display: flex; gap: 6px; align-items: center; }
+    .action-icon {
+      background: none; border: none; cursor: pointer;
+      font-size: 1rem; padding: 5px;
+      border-radius: 8px;
+      transition: transform 0.2s, background 0.2s;
+      min-width: 32px; min-height: 32px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .action-icon:hover { transform: scale(1.15); background: rgba(0,0,0,0.05); }
+    .icon-wa     { color: #25D366; }
+    .icon-card   { color: #7c3aed; }
+    .icon-dl     { color: var(--rose); }
+    .icon-edit   { color: var(--gold-dark, #b8924a); }
+    .icon-delete { color: #c0392b; }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+    }
+    .empty-state i { font-size: 3rem; opacity: 0.3; display: block; margin-bottom: 0.8rem; }
+
+    /* ═══════════════════════════════════════════════════
+       MODALS
+    ═══════════════════════════════════════════════════ */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 1rem;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: var(--ivory);
+      border-radius: var(--radius-lg);
+      padding: clamp(1.2rem, 3vw, 2rem);
+      width: 100%;
+      max-width: 520px;
+      max-height: 90dvh;
+      overflow-y: auto;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.35);
+      animation: modalIn 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: scale(0.9) translateY(20px); }
+      to   { opacity: 1; transform: scale(1)   translateY(0);    }
+    }
+    @media (prefers-color-scheme: dark) {
+      .modal-box { background: var(--dm-surface); }
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.4rem;
+    }
+    .modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.7rem;
+      color: var(--rose);
+    }
+    .modal-close {
+      background: none; border: none;
+      font-size: 1.6rem; cursor: pointer;
+      color: var(--text-muted); line-height: 1;
+      width: 36px; height: 36px;
+      display: flex; align-items: center; justify-content: center;
+      border-radius: 50%;
+      transition: background 0.2s;
+    }
+    .modal-close:hover { background: var(--blush); color: var(--rose); }
+
+    /* ═══════════════════════════════════════════════════
+       SESSION TIMER
+    ═══════════════════════════════════════════════════ */
+    #session-timer {
+      font-size: 0.72rem;
+      color: var(--rose);
+      text-align: right;
+      margin-bottom: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       STICKY ACTION TOOLBAR (admin panel bottom)
+    ═══════════════════════════════════════════════════ */
+    .sticky-toolbar {
+      position: sticky;
+      bottom: env(safe-area-inset-bottom, 0);
+      z-index: 100;
+      background: rgba(255,252,245,0.95);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
+      padding: 0.7rem 1rem;
+      display: flex;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 1.5rem;
+      border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+    }
+    @media (prefers-color-scheme: dark) {
+      .sticky-toolbar { background: rgba(37,24,21,0.95); }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       ADD GUEST PANEL
+    ═══════════════════════════════════════════════════ */
+    .add-form-panel {
+      background: var(--blush);
+      border-radius: var(--radius-md);
+      padding: 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+    .add-form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.9rem;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════════════════════ */
+    @media (max-width: 640px) {
+      .couple-name { font-size: 3.2rem; }
+      .cd-item { min-width: 60px; padding: 0.5rem 0.8rem; }
+      .cd-number { font-size: 1.4rem; }
+      th, td { padding: 9px 10px; }
+      .venue-card { width: 100%; max-width: 300px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="petals-layer" aria-hidden="true"></div>
+
+<!-- ══ TOP NAVIGATION ══════════════════════════════════ -->
+<nav class="top-nav" aria-label="Main navigation">
+  <button class="nav-btn active" id="btn-wedding-view" aria-pressed="true">
+    <i class="fas fa-heart" aria-hidden="true"></i> Wedding
+  </button>
+  <button class="nav-btn" id="admin-nav-btn" aria-pressed="false" aria-label="Admin panel">
+    <i class="fas fa-user-shield" aria-hidden="true"></i> Admin
+  </button>
+</nav>
+
+<!-- ══ PAGE WRAPPER ════════════════════════════════════ -->
+<div class="page-wrap">
+
+  <!-- ════════════════════════════════════════════════
+       WEDDING PUBLIC VIEW
+  ════════════════════════════════════════════════ -->
+  <div id="wedding-view">
+
+    <!-- Hero -->
+    <section class="hero" aria-label="Wedding announcement">
+      <div class="hero-content">
+        <div class="bismillah" lang="ar" dir="rtl">&#1576;&#1616;&#1587;&#1618;&#1605;&#1616; &#1575;&#1604;&#1604;&#1617;&#1614;&#1607;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1618;&#1605;&#1614;&#1606;&#1616; &#1575;&#1604;&#1585;&#1617;&#1614;&#1581;&#1616;&#1610;&#1605;&#1616;</div>
+        <div class="couple-name">Anas &amp; Ruhi</div>
+        <div class="event-dates">20th &amp; 21st November 2026</div>
+
+        <!-- Countdown -->
+        <div class="countdown-wrap" role="timer" aria-live="polite" aria-label="Countdown to Nikah">
+          <div class="countdown-label-top">
+            <i class="fas fa-hourglass-half" aria-hidden="true"></i> Counting Blessings
+          </div>
+          <div class="cd-item"><div class="cd-number" id="cd-days">00</div><div class="cd-unit">Days</div></div>
+          <div class="cd-item"><div class="cd-number" id="cd-hours">00</div><div class="cd-unit">Hours</div></div>
+          <div class="cd-item"><div class="cd-number" id="cd-mins">00</div><div class="cd-unit">Mins</div></div>
+          <div class="cd-item"><div class="cd-number" id="cd-secs">00</div><div class="cd-unit">Secs</div></div>
+        </div>
+
+        <!-- Photos -->
+        <div class="photos-row" aria-label="Couple photos">
+          <div class="photo-card">
+            <div class="photo-ring" style="animation-delay:0s">
+              <img src="https://iili.io/BRRNpmN.jpg" alt="Mohd Anas Alam — Groom" loading="lazy">
+            </div>
+            <div class="photo-name">Mohd Anas Alam</div>
+            <div class="photo-sub">Son of Dr. Aas Mohammad</div>
+          </div>
+          <div class="photo-card">
+            <div class="photo-ring" style="animation-delay:0.5s">
+              <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Bride — Ruhi" loading="lazy">
+              <div class="blur-guard" id="bride-overlay" role="button" tabindex="0" aria-label="Bride photo hidden until reception day" onclick="brideClick()" onkeydown="if(event.key==='Enter')brideClick()">
+                <i class="fas fa-eye-slash" aria-hidden="true"></i>
+                <span style="font-size:0.7rem;text-align:center;padding:0 10px">Revealed on Reception Day</span>
+              </div>
+            </div>
+            <div class="photo-name">Ruhi</div>
+            <div class="photo-sub">Daughter of [Bride's Family]</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Celebrations -->
+    <div class="glass-card reveal" aria-label="Celebrations schedule">
+      <h2 class="section-title"><i class="fas fa-calendar-alt" aria-hidden="true"></i> Celebrations</h2>
+      <div class="celebration-grid">
+        <div class="cel-item">
+          <div class="cel-icon"><i class="fas fa-leaf" aria-hidden="true"></i></div>
+          <div class="cel-title">Haldi</div>
+          <div class="cel-detail">18 November 2026<br>Shaheen Bagh, New Delhi</div>
+        </div>
+        <div class="cel-item highlight">
+          <div class="cel-icon"><i class="fas fa-ring" aria-hidden="true"></i></div>
+          <div class="cel-title">Nikah</div>
+          <div class="cel-detail">
+            20 November 2026<br>
+            Barat: 6:30 PM | Nikah: 8:00 PM<br>
+            Vivah Farm House &amp; Banquet Hall<br>
+            Indrapuri, Uttar Pradesh 201102
+          </div>
+        </div>
+        <div class="cel-item">
+          <div class="cel-icon"><i class="fas fa-utensils" aria-hidden="true"></i></div>
+          <div class="cel-title">Reception</div>
+          <div class="cel-detail">21 November 2026<br>Dinner: 7:00 PM onwards<br>Mujeeb Bagh, Jamia Nagar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Venues & QR codes -->
+    <div class="glass-card reveal" aria-label="Venue information">
+      <h2 class="section-title"><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Venues &amp; Directions</h2>
+      <div class="venue-grid">
+        <div class="venue-card">
+          <div class="venue-badge">Residence</div>
+          <img class="venue-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=7a3528&bgcolor=ffffff&qzone=1&data=https%3A%2F%2Fmaps.app.goo.gl%2FWe4gSdouxVgsmx7Q6" alt="QR code for Residence" loading="lazy" width="150" height="150">
+          <div class="venue-name">Residence</div>
+          <div class="venue-addr">Shaheen Bagh, New Delhi<br>Barat Departure Point</div>
+          <a href="https://maps.app.goo.gl/We4gSdouxVgsmx7Q6" target="_blank" rel="noopener" class="btn btn-rose btn-sm" style="margin-top:0.8rem;text-decoration:none;" aria-label="Open residence map">
+            <i class="fas fa-directions" aria-hidden="true"></i> Open Map
+          </a>
+        </div>
+        <div class="venue-card featured">
+          <div class="venue-badge">Nikah Venue</div>
+          <img class="venue-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=7a3528&bgcolor=ffffff&qzone=1&data=https%3A%2F%2Fshare.google%2FZvAIo3Z1zRkMIC1ty" alt="QR code for Nikah venue" loading="lazy" width="150" height="150">
+          <div class="venue-name">Vivah Farm House &amp; Banquet Hall</div>
+          <div class="venue-addr">Indrapuri, Uttar Pradesh 201102</div>
+          <a href="https://share.google/ZvAIo3Z1zRkMIC1ty" target="_blank" rel="noopener" class="btn btn-rose btn-sm" style="margin-top:0.8rem;text-decoration:none;" aria-label="Open Nikah venue map">
+            <i class="fas fa-directions" aria-hidden="true"></i> Open Map
+          </a>
+        </div>
+        <div class="venue-card">
+          <div class="venue-badge">Reception</div>
+          <img class="venue-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&color=7a3528&bgcolor=ffffff&qzone=1&data=https%3A%2F%2Fmaps.app.goo.gl%2FTaNt2jem1AyMEjDU8" alt="QR code for Reception venue" loading="lazy" width="150" height="150">
+          <div class="venue-name">Mujeeb Bagh Community Center</div>
+          <div class="venue-addr">Jamia Nagar, New Delhi</div>
+          <a href="https://maps.app.goo.gl/TaNt2jem1AyMEjDU8" target="_blank" rel="noopener" class="btn btn-rose btn-sm" style="margin-top:0.8rem;text-decoration:none;" aria-label="Open Reception venue map">
+            <i class="fas fa-directions" aria-hidden="true"></i> Open Map
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dua -->
+    <div class="dua-block reveal">
+      <div class="dua-arabic" lang="ar" dir="rtl">&#1576;&#1614;&#1575;&#1585;&#1614;&#1603;&#1614; &#1575;&#1604;&#1604;&#1617;&#1614;&#1607;&#1615; &#1604;&#1614;&#1603;&#1615;&#1605;&#1614;&#1575; &#1608;&#1614;&#1576;&#1614;&#1575;&#1585;&#1614;&#1603;&#1614; &#1593;&#1614;&#1604;&#1614;&#1610;&#1618;&#1603;&#1615;&#1605;&#1614;&#1575;</div>
+      <div class="dua-trans">"May Allah bless you both and shower His blessings upon you"</div>
+    </div>
+
+    <!-- Footer — triple-click triggers hidden admin -->
+    <footer class="site-footer" id="secret-footer" aria-label="Footer">
+      Crafted with love for a blessed union<br>
+      &copy; 2026 Mohd Anas Alam &amp; Ruhi
+    </footer>
+  </div>
+  <!-- END WEDDING VIEW -->
+
+
+  <!-- ════════════════════════════════════════════════
+       ADMIN VIEW
+  ════════════════════════════════════════════════ -->
+  <div id="admin-view" style="display:none">
+
+    <!-- ── Login ── -->
+    <div id="admin-login" class="glass-card login-card">
+      <h2 class="section-title" style="margin-top:0"><i class="fas fa-lock" aria-hidden="true"></i> Admin Login</h2>
+      <div class="login-error" id="login-error" role="alert"></div>
+      <div class="form-group">
+        <label class="form-label" for="inp-username">Username</label>
+        <input class="form-control" type="text" id="inp-username" autocomplete="off" placeholder="Enter username">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="inp-password">Password</label>
+        <input class="form-control" type="password" id="inp-password" placeholder="Enter password">
+      </div>
+      <button class="btn btn-rose" id="btn-login" style="width:100%">
+        <i class="fas fa-sign-in-alt" aria-hidden="true"></i> Login
+      </button>
+    </div>
+
+    <!-- ── Admin Panel ── -->
+    <div id="admin-panel" style="display:none">
+
+      <!-- Panel header with session timer + logout -->
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+        <h2 class="section-title" style="margin:0;text-align:left"><i class="fas fa-users-cog" aria-hidden="true"></i> Guest Management</h2>
+        <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap">
+          <div id="session-timer" aria-live="polite"></div>
+          <button class="btn btn-danger btn-sm" id="btn-logout">
+            <i class="fas fa-sign-out-alt" aria-hidden="true"></i> Logout
+          </button>
+        </div>
+      </div>
+
+      <!-- ── Add Guest form ── -->
+      <div class="glass-card">
+        <h3 style="color:var(--rose);margin-bottom:1rem;font-family:'Cormorant Garamond',serif;font-size:1.5rem">
+          <i class="fas fa-user-plus" aria-hidden="true"></i> Add New Guest
+        </h3>
+        <div class="add-form-panel">
+          <div class="add-form-grid">
+            <div class="form-group">
+              <label class="form-label" for="f-name">Guest Name *</label>
+              <input class="form-control" type="text" id="f-name" placeholder="e.g. Dr. Mohd Shadab Alam">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-type">Guest Type</label>
+              <select class="form-control" id="f-type">
+                <option value="with_family">With Family</option>
+                <option value="individual">Individual</option>
+                <option value="with_spouse">With Spouse</option>
+                <option value="with_parents">With Parents</option>
+                <option value="with_kids">With Kids</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-phone">WhatsApp (with country code)</label>
+              <input class="form-control" type="tel" id="f-phone" placeholder="+91 9XXXXXXXXX">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-invited-by">Invited By</label>
+              <select class="form-control" id="f-invited-by" onchange="UI.toggleOtherField('f-invited-by','f-other-group')">
+                <option value="Mohd Anas Alam (Groom)">Mohd Anas Alam (Groom)</option>
+                <option value="Dr. Aas Mohammad (Father)">Dr. Aas Mohammad (Father)</option>
+                <option value="Mohd Shoeb Alam">Mohd Shoeb Alam</option>
+                <option value="Dr. Mohd Shadab Alam">Dr. Mohd Shadab Alam</option>
+                <option value="Mohd Parvez Alam">Mohd Parvez Alam</option>
+                <option value="Dr. Qamar Tanveer">Dr. Qamar Tanveer</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group" id="f-other-group" style="display:none">
+              <label class="form-label" for="f-other-name">Custom Invited By</label>
+              <input class="form-control" type="text" id="f-other-name" placeholder="Enter name">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-invite-type">Invitation Type</label>
+              <select class="form-control" id="f-invite-type">
+                <option value="both">Both (Nikah + Reception)</option>
+                <option value="nikah">Nikah Only</option>
+                <option value="reception">Reception Only</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-adults">Adults</label>
+              <input class="form-control" type="number" id="f-adults" value="1" min="1" max="50">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="f-kids">Children</label>
+              <input class="form-control" type="number" id="f-kids" value="0" min="0" max="30">
+            </div>
+          </div>
+          <div style="display:flex;gap:0.6rem;flex-wrap:wrap;margin-top:0.5rem">
+            <button class="btn btn-rose" id="btn-add-guest"><i class="fas fa-plus" aria-hidden="true"></i> Add Guest</button>
+            <button class="btn btn-danger" id="btn-reset-all"><i class="fas fa-trash-alt" aria-hidden="true"></i> Reset All Data</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Statistics dashboard ── -->
+      <div class="glass-card">
+        <h3 style="color:var(--rose);margin-bottom:0.8rem;font-family:'Cormorant Garamond',serif;font-size:1.5rem">
+          <i class="fas fa-chart-bar" aria-hidden="true"></i> Dashboard
+        </h3>
+        <div class="stats-grid" id="stats-grid"></div>
+        <div id="breakdown-panel"></div>
+      </div>
+
+      <!-- ── Guest list ── -->
+      <div class="glass-card">
+        <h3 style="color:var(--rose);margin-bottom:1rem;font-family:'Cormorant Garamond',serif;font-size:1.5rem">
+          <i class="fas fa-list" aria-hidden="true"></i> Guest List
+          <span id="guest-count-badge" style="font-size:0.85rem;font-weight:400;color:var(--text-muted);margin-left:0.5rem"></span>
+        </h3>
+
+        <div class="search-bar">
+          <input class="form-control" type="search" id="search-input" placeholder="Search guests, phone, invited by…" aria-label="Search guests">
+          <select class="form-control" id="filter-type" aria-label="Filter by invite type">
+            <option value="all">All Types</option>
+            <option value="nikah">Nikah Only</option>
+            <option value="reception">Reception Only</option>
+            <option value="both">Both Events</option>
+          </select>
+          <select class="form-control" id="filter-status" aria-label="Filter by send status">
+            <option value="all">All Status</option>
+            <option value="sent">Sent</option>
+            <option value="pending">Pending</option>
+          </select>
+        </div>
+
+        <div class="table-wrap">
+          <table aria-label="Guest list">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Phone</th>
+                <th>Invited By</th>
+                <th>Event</th>
+                <th>Adlt</th>
+                <th>Kids</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Sent On</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="guest-tbody"></tbody>
+          </table>
+        </div>
+
+        <div id="empty-state" class="empty-state" style="display:none" aria-live="polite">
+          <i class="fas fa-user-slash" aria-hidden="true"></i>
+          <p>No guests found. Add your first guest above.</p>
+        </div>
+
+        <!-- Sticky toolbar -->
+        <div class="sticky-toolbar" role="group" aria-label="Export options">
+          <button class="btn btn-sage" id="btn-csv"><i class="fas fa-file-csv" aria-hidden="true"></i> Export CSV</button>
+          <button class="btn btn-rose" id="btn-pdf"><i class="fas fa-file-pdf" aria-hidden="true"></i> Export PDF</button>
+          <button class="btn btn-wa"   id="btn-share-summary"><i class="fab fa-whatsapp" aria-hidden="true"></i> Share Summary</button>
+        </div>
+      </div>
+
+    </div>
+    <!-- END admin panel -->
+
+  </div>
+  <!-- END ADMIN VIEW -->
+
+</div>
+<!-- END PAGE WRAP -->
+
+<!-- ═══════════ EDIT GUEST MODAL ══════════════════════ -->
+<div class="modal-overlay" id="edit-modal" role="dialog" aria-modal="true" aria-label="Edit guest">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 class="modal-title"><i class="fas fa-edit" aria-hidden="true"></i> Edit Guest</h3>
+      <button class="modal-close" onclick="UI.closeEditModal()" aria-label="Close">&times;</button>
+    </div>
+    <div class="add-form-grid">
+      <div class="form-group">
+        <label class="form-label" for="e-name">Guest Name *</label>
+        <input class="form-control" type="text" id="e-name" placeholder="Guest name">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="e-type">Guest Type</label>
+        <select class="form-control" id="e-type">
+          <option value="with_family">With Family</option>
+          <option value="individual">Individual</option>
+          <option value="with_spouse">With Spouse</option>
+          <option value="with_parents">With Parents</option>
+          <option value="with_kids">With Kids</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="e-phone">WhatsApp Number</label>
+        <input class="form-control" type="tel" id="e-phone" placeholder="+91 9XXXXXXXXX">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="e-invited-by">Invited By</label>
+        <select class="form-control" id="e-invited-by" onchange="UI.toggleOtherField('e-invited-by','e-other-group')">
+          <option value="Mohd Anas Alam (Groom)">Mohd Anas Alam (Groom)</option>
+          <option value="Dr. Aas Mohammad (Father)">Dr. Aas Mohammad (Father)</option>
+          <option value="Mohd Shoeb Alam">Mohd Shoeb Alam</option>
+          <option value="Dr. Mohd Shadab Alam">Dr. Mohd Shadab Alam</option>
+          <option value="Mohd Parvez Alam">Mohd Parvez Alam</option>
+          <option value="Dr. Qamar Tanveer">Dr. Qamar Tanveer</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group" id="e-other-group" style="display:none">
+        <label class="form-label" for="e-other-name">Custom Invited By</label>
+        <input class="form-control" type="text" id="e-other-name" placeholder="Enter name">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="e-invite-type">Invitation Type</label>
+        <select class="form-control" id="e-invite-type">
+          <option value="both">Both (Nikah + Reception)</option>
+          <option value="nikah">Nikah Only</option>
+          <option value="reception">Reception Only</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="e-adults">Adults</label>
+        <input class="form-control" type="number" id="e-adults" value="1" min="1">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="e-kids">Children</label>
+        <input class="form-control" type="number" id="e-kids" value="0" min="0">
+      </div>
+    </div>
+    <input type="hidden" id="e-id">
+    <div style="display:flex;gap:0.8rem;margin-top:1.2rem">
+      <button class="btn btn-rose" onclick="Guest.saveEdit()" style="flex:1"><i class="fas fa-save" aria-hidden="true"></i> Save</button>
+      <button class="btn btn-danger" onclick="UI.closeEditModal()" style="flex:1"><i class="fas fa-times" aria-hidden="true"></i> Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Close modal on backdrop click -->
+<script>
+document.getElementById('edit-modal').addEventListener('click', function(e) {
+  if (e.target === this) UI.closeEditModal();
+});
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   CENTRALIZED CONFIGURATION — only edit this section
+   For production scale: replace Storage.* functions with
+   Firebase Firestore or Supabase equivalents.
+═══════════════════════════════════════════════════════════════ */
+const CONFIG = {
+  maps: {
+    residence:       'https://maps.app.goo.gl/We4gSdouxVgsmx7Q6',
+    nikahVenue:      'https://share.google/ZvAIo3Z1zRkMIC1ty',
+    receptionVenue:  'https://maps.app.goo.gl/TaNt2jem1AyMEjDU8',
+    baratDestination:'https://share.google/ZvAIo3Z1zRkMIC1ty'
+  },
+  events: {
+    nikah: {
+      date:    'Saturday, 20th November 2026',
+      time:    'Barat: 6:30 PM | Nikah: 8:00 PM',
+      venue:   'Vivah Farm House & Banquet Hall',
+      address: 'Indrapuri, Uttar Pradesh 201102'
+    },
+    reception: {
+      date:    'Sunday, 21st November 2026',
+      time:    'Dinner: 7:00 PM onwards',
+      venue:   'Mujeeb Bagh Community Center',
+      address: 'Jamia Nagar, New Delhi'
+    }
+  },
+  contacts: ['9582020021', '9015888330', '9891582628', '8447728951'],
+  admin: {
+    username:     'admin',
+    // SHA-256 of 'wedding2026' — to change: run hashPass('newpass') in console
+    passwordHash: '80a5b9d6f893cb40365d935d61ae35d4674b2f182bf7251244b627c4365eda31'
+  },
+  session: {
+    timeoutMs:    30 * 60 * 1000, // 30 minutes
+    maxAttempts:  5
+  },
+  dates: {
+    nikah:     new Date(2026, 10, 20, 20, 0, 0),
+    reception: new Date(2026, 10, 21, 19, 0, 0)
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   STORAGE ABSTRACTION LAYER
+   Replace these functions to migrate to Firebase/Supabase
+   without changing any other application code.
+═══════════════════════════════════════════════════════════════ */
+const STORAGE_KEYS = {
+  guests:       'wedding_guests_v3',
+  brideReveal:  'bride_revealed',
+  cardPrefix:   'card_guest_'
+};
+
+const Storage = {
+  loadGuests() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEYS.guests)) || [];
+    } catch (e) {
+      console.error('Storage.loadGuests failed', e);
+      return [];
+    }
+  },
+  saveGuests(list) {
+    try {
+      localStorage.setItem(STORAGE_KEYS.guests, JSON.stringify(list));
+    } catch (e) {
+      console.error('Storage.saveGuests failed — localStorage full?', e);
+      UI.toast('Storage error. Data may not be saved.', 'error');
+    }
+  },
+  deleteGuest(id) {
+    const list = this.loadGuests().filter(g => g.id !== id);
+    this.saveGuests(list);
+    return list;
+  },
+  updateGuest(id, updates) {
+    const list = this.loadGuests().map(g => g.id === id ? { ...g, ...updates } : g);
+    this.saveGuests(list);
+    return list;
+  },
+  saveCardData(guest) {
+    try {
+      localStorage.setItem(STORAGE_KEYS.cardPrefix + guest.id, JSON.stringify(guest));
+    } catch (e) { /* non-critical */ }
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   APPLICATION STATE
+═══════════════════════════════════════════════════════════════ */
+const App = {
+  guests:          Storage.loadGuests(),
+  isLoggedIn:      false,
+  loginAttempts:   0,
+  sessionEnd:      null,
+  sessionIntervalId: null,
+  brideRevealed:   localStorage.getItem(STORAGE_KEYS.brideReveal) === 'true',
+  searchTimeout:   null // for debounced search
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   HELPERS
+═══════════════════════════════════════════════════════════════ */
+function escH(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' })[c]);
+}
+
+function guestTypeLabel(t) {
+  return { with_family:'With Family', individual:'Individual',
+           with_spouse:'With Spouse', with_parents:'With Parents',
+           with_kids:'With Kids' }[t] || t || '';
+}
+function guestTypeSuffix(t) {
+  return (t && t !== 'individual') ? guestTypeLabel(t) : '';
+}
+
+function typeBadge(type) {
+  const map = {
+    nikah:     'badge-nikah',
+    reception: 'badge-reception',
+    both:      'badge-both'
+  };
+  const labels = { nikah:'Nikah', reception:'Reception', both:'Both' };
+  return `<span class="badge ${map[type] || ''}">${labels[type] || type}</span>`;
+}
+
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+async function hashPass(password) {
+  const enc = new TextEncoder();
+  const buf = await crypto.subtle.digest('SHA-256', enc.encode(password));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
+}
+
+/* Get "Invited By" from form fields */
+function getInvitedBy(selId, otherId) {
+  const v = document.getElementById(selId).value;
+  return v === 'Other' ? (document.getElementById(otherId).value.trim() || 'Other') : v;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UI MODULE
+═══════════════════════════════════════════════════════════════ */
+const UI = {
+  toast(msg, type = 'info') {
+    let t = document.getElementById('global-toast');
+    if (!t) {
+      t = document.createElement('div');
+      t.id = 'global-toast';
+      Object.assign(t.style, {
+        position:'fixed', bottom:'80px', left:'50%', transform:'translateX(-50%)',
+        padding:'10px 22px', borderRadius:'40px', fontSize:'.8rem',
+        fontFamily:'Montserrat,sans-serif', fontWeight:'600',
+        zIndex:'9999', opacity:'0', transition:'opacity .3s',
+        whiteSpace:'nowrap', boxShadow:'0 4px 18px rgba(0,0,0,.35)'
+      });
+      t.setAttribute('role', 'alert');
+      t.setAttribute('aria-live', 'polite');
+      document.body.appendChild(t);
+    }
+    t.style.background = type === 'error' ? '#c0392b' : '#2D2A2A';
+    t.style.color = '#fff';
+    t.textContent = msg;
+    t.style.opacity = '1';
+    clearTimeout(UI._toastTimer);
+    UI._toastTimer = setTimeout(() => { t.style.opacity = '0'; }, 2400);
+  },
+
+  toggleOtherField(selId, groupId) {
+    const isOther = document.getElementById(selId).value === 'Other';
+    document.getElementById(groupId).style.display = isOther ? 'block' : 'none';
+  },
+
+  openEditModal(id) {
+    const g = App.guests.find(g => g.id === id);
+    if (!g) return;
+    const known = ['Mohd Anas Alam (Groom)','Dr. Aas Mohammad (Father)','Mohd Shoeb Alam',
+                   'Dr. Mohd Shadab Alam','Mohd Parvez Alam','Dr. Qamar Tanveer'];
+    document.getElementById('e-id').value           = g.id;
+    document.getElementById('e-name').value         = g.name;
+    document.getElementById('e-phone').value        = g.phone || '';
+    document.getElementById('e-adults').value       = g.adults || 1;
+    document.getElementById('e-kids').value         = g.kids   || 0;
+    document.getElementById('e-invite-type').value  = g.inviteType || 'both';
+    document.getElementById('e-type').value         = g.guestType  || 'with_family';
+
+    if (known.includes(g.invitedBy)) {
+      document.getElementById('e-invited-by').value = g.invitedBy;
+      document.getElementById('e-other-group').style.display = 'none';
+    } else {
+      document.getElementById('e-invited-by').value = 'Other';
+      document.getElementById('e-other-name').value = g.invitedBy || '';
+      document.getElementById('e-other-group').style.display = 'block';
+    }
+    document.getElementById('edit-modal').classList.add('open');
+    document.getElementById('e-name').focus();
+  },
+
+  closeEditModal() {
+    document.getElementById('edit-modal').classList.remove('open');
+  },
+
+  renderTable() {
+    if (!App.isLoggedIn) return;
+    const search     = (document.getElementById('search-input')?.value || '').toLowerCase().trim();
+    const typeFilter = document.getElementById('filter-type')?.value  || 'all';
+    const statFilter = document.getElementById('filter-status')?.value || 'all';
+
+    const filtered = App.guests.filter(g => {
+      /* Search: name, phone, invited by */
+      const matchSearch = !search ||
+        g.name.toLowerCase().includes(search) ||
+        (g.phone  && g.phone.includes(search)) ||
+        (g.invitedBy && g.invitedBy.toLowerCase().includes(search));
+      const matchType  = typeFilter === 'all' || g.inviteType === typeFilter;
+      const matchStat  = statFilter === 'all' ||
+        (statFilter === 'sent' && g.inviteSent) ||
+        (statFilter === 'pending' && !g.inviteSent);
+      return matchSearch && matchType && matchStat;
+    });
+
+    const badge = document.getElementById('guest-count-badge');
+    if (badge) badge.textContent = `(${filtered.length} / ${App.guests.length})`;
+
+    const tbody = document.getElementById('guest-tbody');
+    if (!tbody) return;
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '';
+      document.getElementById('empty-state').style.display = 'block';
+    } else {
+      document.getElementById('empty-state').style.display = 'none';
+      /* Build rows via DocumentFragment for performance */
+      const frag = document.createDocumentFragment();
+      filtered.forEach((g, i) => {
+        const total = (g.adults || 1) + (g.kids || 0);
+        const sfx   = guestTypeSuffix(g.guestType);
+        const tr    = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${i + 1}</td>
+          <td>
+            <strong>${escH(g.name)}</strong>
+            ${sfx ? `<br><small style="color:var(--sage-dark);font-size:.7rem">${escH(sfx)}</small>` : ''}
+          </td>
+          <td>${typeBadge(g.inviteType)}</td>
+          <td>${escH(g.phone || '—')}</td>
+          <td>${escH(g.invitedBy || '—')}</td>
+          <td><span class="badge ${g.inviteType === 'nikah' ? 'badge-nikah' : g.inviteType === 'reception' ? 'badge-reception' : 'badge-both'}">${g.inviteType === 'nikah' ? 'Nikah' : g.inviteType === 'reception' ? 'Reception' : 'Both'}</span></td>
+          <td>${g.adults || 1}</td>
+          <td>${g.kids   || 0}</td>
+          <td><strong>${total}</strong></td>
+          <td class="${g.inviteSent ? 'status-sent' : 'status-pending'}">${g.inviteSent ? '&#10003; Sent' : '&#9679; Pending'}</td>
+          <td style="font-size:.72rem;color:var(--text-muted)">${g.inviteSentDate || '—'}</td>
+          <td>
+            <div class="action-icons">
+              <button class="action-icon icon-wa"     title="Send WhatsApp" onclick="WA.send(${g.id})" aria-label="Send WhatsApp to ${escH(g.name)}"><i class="fab fa-whatsapp"></i></button>
+              <button class="action-icon icon-card"   title="Preview Card"  onclick="Guest.previewCard(${g.id})" aria-label="Preview invitation card for ${escH(g.name)}"><i class="fas fa-envelope-open-text"></i></button>
+              <button class="action-icon icon-dl"     title="Download Card" onclick="Guest.downloadCard(${g.id})" aria-label="Download card for ${escH(g.name)}"><i class="fas fa-download"></i></button>
+              <button class="action-icon icon-edit"   title="Edit Guest"    onclick="UI.openEditModal(${g.id})" aria-label="Edit ${escH(g.name)}"><i class="fas fa-edit"></i></button>
+              <button class="action-icon icon-delete" title="Delete Guest"  onclick="Guest.remove(${g.id})" aria-label="Delete ${escH(g.name)}"><i class="fas fa-trash-alt"></i></button>
+            </div>
+          </td>`;
+        frag.appendChild(tr);
+      });
+      tbody.innerHTML = '';
+      tbody.appendChild(frag);
+    }
+
+    this.renderStats();
+  },
+
+  renderStats() {
+    let nikahOnly = 0, receptionOnly = 0, both = 0;
+    let nikahP = 0, receptionP = 0, invitesSent = 0, invitesPending = 0;
+    const invByMap = {};
+
+    App.guests.forEach(g => {
+      const tp = (g.adults || 1) + (g.kids || 0);
+      if (g.inviteType === 'nikah')     { nikahOnly++;     nikahP += tp; }
+      else if (g.inviteType === 'reception') { receptionOnly++; receptionP += tp; }
+      else                             { both++;           nikahP += tp; receptionP += tp; }
+      if (g.inviteSent) invitesSent++; else invitesPending++;
+      const key = g.invitedBy || 'Unknown';
+      invByMap[key] = (invByMap[key] || 0) + 1;
+    });
+
+    const totalP = App.guests.reduce((a, g) => a + (g.adults || 1) + (g.kids || 0), 0);
+    const tf     = App.guests.length;
+
+    const sg = document.getElementById('stats-grid');
+    if (!sg) return;
+    sg.innerHTML = `
+      <div class="stat-card"><div class="stat-icon">&#128101;</div><div class="stat-label">Total Guests</div><div class="stat-value">${tf}</div><div class="stat-sub">Families</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128106;</div><div class="stat-label">Total Persons</div><div class="stat-value">${totalP}</div><div class="stat-sub">Across all events</div></div>
+      <div class="stat-card"><div class="stat-icon" style="color:#27ae60">&#10003;</div><div class="stat-label">Invites Sent</div><div class="stat-value" style="color:#27ae60">${invitesSent}</div><div class="stat-sub">of ${tf}</div></div>
+      <div class="stat-card"><div class="stat-icon" style="color:#e74c3c">&#9679;</div><div class="stat-label">Pending</div><div class="stat-value" style="color:#e74c3c">${invitesPending}</div><div class="stat-sub">not yet sent</div></div>
+      <div class="stat-card"><div class="stat-icon">&#128331;</div><div class="stat-label">Nikah Guests</div><div class="stat-value">${nikahOnly + both}</div><div class="stat-sub">${nikahP} persons</div></div>
+      <div class="stat-card"><div class="stat-icon">&#127881;</div><div class="stat-label">Reception</div><div class="stat-value">${receptionOnly + both}</div><div class="stat-sub">${receptionP} persons</div></div>
+      <div class="stat-card"><div class="stat-icon">&#10024;</div><div class="stat-label">Both Events</div><div class="stat-value">${both}</div><div class="stat-sub">Families</div></div>`;
+
+    /* Invited-by breakdown */
+    const bp = document.getElementById('breakdown-panel');
+    if (bp && Object.keys(invByMap).length > 0) {
+      bp.innerHTML = `<div class="breakdown-wrap">
+        <div class="breakdown-title"><i class="fas fa-user-friends"></i> Invited By Breakdown</div>
+        <div class="breakdown-pills">
+          ${Object.entries(invByMap).sort((a,b) => b[1]-a[1]).map(([k,v]) =>
+            `<span class="breakdown-pill">${escH(k)}: ${v}</span>`).join('')}
+        </div>
+      </div>`;
+    } else if (bp) bp.innerHTML = '';
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   GUEST MODULE — add / edit / delete / card / preview
+═══════════════════════════════════════════════════════════════ */
+const Guest = {
+  add() {
+    const name = document.getElementById('f-name').value.trim();
+    if (!name) { UI.toast('Please enter a guest name', 'error'); return; }
+
+    const g = {
+      id:            Date.now(),
+      name,
+      guestType:     document.getElementById('f-type').value         || 'with_family',
+      phone:         document.getElementById('f-phone').value.trim() || '',
+      invitedBy:     getInvitedBy('f-invited-by', 'f-other-name'),
+      inviteType:    document.getElementById('f-invite-type').value  || 'both',
+      adults:        Math.max(1, parseInt(document.getElementById('f-adults').value) || 1),
+      kids:          Math.max(0, parseInt(document.getElementById('f-kids').value)   || 0),
+      inviteSent:    false,
+      inviteSentDate:null
+    };
+
+    App.guests.push(g);
+    Storage.saveGuests(App.guests);
+    Storage.saveCardData(g);
+    this._resetAddForm();
+    UI.renderTable();
+    UI.toast(`"${name}" added successfully!`);
+  },
+
+  _resetAddForm() {
+    ['f-name','f-phone','f-other-name'].forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+    document.getElementById('f-adults').value      = '1';
+    document.getElementById('f-kids').value        = '0';
+    document.getElementById('f-type').value        = 'with_family';
+    document.getElementById('f-invite-type').value = 'both';
+    document.getElementById('f-invited-by').value  = 'Mohd Anas Alam (Groom)';
+    document.getElementById('f-other-group').style.display = 'none';
+  },
+
+  saveEdit() {
+    const id   = parseInt(document.getElementById('e-id').value);
+    const name = document.getElementById('e-name').value.trim();
+    if (!name) { UI.toast('Guest name is required', 'error'); return; }
+
+    const updates = {
+      name,
+      guestType:  document.getElementById('e-type').value,
+      phone:      document.getElementById('e-phone').value.trim(),
+      invitedBy:  getInvitedBy('e-invited-by', 'e-other-name'),
+      inviteType: document.getElementById('e-invite-type').value,
+      adults:     Math.max(1, parseInt(document.getElementById('e-adults').value) || 1),
+      kids:       Math.max(0, parseInt(document.getElementById('e-kids').value)   || 0)
+    };
+
+    App.guests = Storage.updateGuest(id, updates);
+    /* Update card data in localStorage too */
+    const updated = App.guests.find(g => g.id === id);
+    if (updated) Storage.saveCardData(updated);
+    UI.closeEditModal();
+    UI.renderTable();
+    UI.toast(`"${name}" updated.`);
+  },
+
+  remove(id) {
+    const g = App.guests.find(g => g.id === id);
+    if (!g) return;
+    if (!confirm(`Delete "${g.name}" from guest list?\n\nThis cannot be undone.`)) return;
+    App.guests = Storage.deleteGuest(id);
+    try { localStorage.removeItem(STORAGE_KEYS.cardPrefix + id); } catch(e) {}
+    UI.renderTable();
+    UI.toast(`"${g.name}" deleted.`);
+  },
+
+  previewCard(id) {
+    const g = App.guests.find(g => g.id === id);
+    if (!g) return;
+    Storage.saveCardData(g);
+    const base = window.location.pathname.replace(/\/[^/]*$/, '');
+    window.open(base + '/card.html?id=' + g.id, '_blank');
+  },
+
+  downloadCard(id) {
+    const g = App.guests.find(g => g.id === id);
+    if (!g) return;
+    /* Use the same card.html approach: open with embedded data */
+    Storage.saveCardData(g);
+    this.previewCard(id);
+    UI.toast('Card opened in new tab — use browser Print to save as PDF');
+  },
+
+  resetAll() {
+    if (!confirm('WARNING: This will permanently delete ALL guest data.\n\nType RESET to confirm.')) return;
+    const v = prompt('Type RESET to confirm:');
+    if (v !== 'RESET') { UI.toast('Reset cancelled.'); return; }
+    App.guests = [];
+    Storage.saveGuests([]);
+    UI.renderTable();
+    UI.toast('All data reset.');
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   WHATSAPP MODULE
+═══════════════════════════════════════════════════════════════ */
+const WA = {
+  buildMessage(g) {
+    const ni  = CONFIG.events.nikah;
+    const ri  = CONFIG.events.reception;
+    const sfx = guestTypeSuffix(g.guestType);
+    const disp = sfx ? g.name + ' & ' + sfx : g.name;
+    const base = window.location.origin + window.location.pathname.replace(/\/[^/]*$/, '');
+
+    const L = [
+      'Assalamu Alaikum Wa Rahmatullahi Wa Barakatuh',
+      '',
+      'Dear *' + disp + '*,',
+      '',
+      'You are cordially invited to the blessed wedding of:',
+      '*Mohd Anas Alam & Ruhi*',
+      '',
+      '================================',
+      ''
+    ];
+
+    if (g.inviteType === 'nikah' || g.inviteType === 'both') {
+      L.push('*NIKAH CEREMONY*');
+      L.push('Date  : ' + ni.date);
+      L.push('Time  : ' + ni.time);
+      L.push('Venue : ' + ni.venue);
+      L.push('Addr  : ' + ni.address);
+      L.push('Map   : ' + CONFIG.maps.nikahVenue);
+      L.push('');
+    }
+    if (g.inviteType === 'reception' || g.inviteType === 'both') {
+      L.push('*RECEPTION (Walima)*');
+      L.push('Date  : ' + ri.date);
+      L.push('Time  : ' + ri.time);
+      L.push('Venue : ' + ri.venue);
+      L.push('Addr  : ' + ri.address);
+      L.push('Map   : ' + CONFIG.maps.receptionVenue);
+      L.push('');
+    }
+
+    L.push('================================');
+    L.push('Residence (Barat Departure):');
+    L.push(CONFIG.maps.residence);
+    L.push('');
+    L.push('Kindly grace us with your presence and duas.');
+    L.push('');
+    L.push('*JazakAllah Khair*');
+    L.push('Contact: ' + CONFIG.contacts.join(' | '));
+    L.push('');
+    L.push('--- Your Digital Invitation ---');
+    L.push(base + '/card.html?id=' + g.id);
+
+    return encodeURIComponent(L.join('\n'));
+  },
+
+  send(id) {
+    const g = App.guests.find(g => g.id === id);
+    if (!g) return;
+    if (!g.phone) { UI.toast('No WhatsApp number saved for this guest.', 'error'); return; }
+
+    const phone   = g.phone.replace(/[^0-9+]/g, '');
+    const message = this.buildMessage(g);
+    Storage.saveCardData(g); // ensure card data is fresh
+    window.open('https://wa.me/' + phone + '?text=' + message, '_blank');
+
+    const now      = new Date();
+    const sentDate = now.toLocaleDateString('en-IN') + ' ' +
+                     now.toLocaleTimeString('en-IN', { hour:'2-digit', minute:'2-digit' });
+    App.guests = Storage.updateGuest(id, { inviteSent: true, inviteSentDate: sentDate });
+    UI.renderTable();
+    UI.toast('Invitation sent to ' + g.name);
+  },
+
+  shareSummary() {
+    const tf = App.guests.length;
+    const tp = App.guests.reduce((a,g) => a + (g.adults||1) + (g.kids||0), 0);
+    let nikahG = 0, receptionG = 0, both = 0, sent = 0, pending = 0;
+    App.guests.forEach(g => {
+      if (g.inviteType === 'nikah')     nikahG++;
+      else if (g.inviteType === 'reception') receptionG++;
+      else both++;
+      if (g.inviteSent) sent++; else pending++;
+    });
+    const msg = [
+      '*WEDDING GUEST SUMMARY*',
+      '',
+      'Total Families: ' + tf,
+      'Total Persons : ' + tp,
+      '',
+      'Nikah Guests    : ' + (nikahG + both),
+      'Reception Guests: ' + (receptionG + both),
+      '',
+      'Invites Sent   : ' + sent,
+      'Invites Pending: ' + pending,
+      '',
+      'May Allah bless this union!'
+    ].join('\n');
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   EXPORT MODULE
+═══════════════════════════════════════════════════════════════ */
+const Export = {
+  toCSV() {
+    const header = [
+      '#','Name','Guest Type','Phone','Invited By','Invite Type',
+      'Adults','Children','Total Persons','Invite Status','Sent Date'
+    ];
+    const rows = App.guests.map((g, i) => [
+      i + 1,
+      g.name,
+      guestTypeLabel(g.guestType || 'individual'),
+      g.phone || '',
+      g.invitedBy || '',
+      g.inviteType === 'nikah' ? 'Nikah Only' : g.inviteType === 'reception' ? 'Reception Only' : 'Both',
+      g.adults || 1,
+      g.kids   || 0,
+      (g.adults || 1) + (g.kids || 0),
+      g.inviteSent ? 'Sent' : 'Pending',
+      g.inviteSentDate || ''
+    ]);
+
+    /* Summary block */
+    const tf = App.guests.length;
+    const tp = App.guests.reduce((a,g) => a + (g.adults||1) + (g.kids||0), 0);
+    let nikahG = 0, receptionG = 0, both = 0, sent = 0;
+    App.guests.forEach(g => {
+      if (g.inviteType==='nikah') nikahG++;
+      else if (g.inviteType==='reception') receptionG++;
+      else both++;
+      if (g.inviteSent) sent++;
+    });
+
+    rows.push([], ['=== SUMMARY ===']);
+    rows.push(['Export Date',   new Date().toLocaleString('en-IN')]);
+    rows.push(['Total Families', tf]);
+    rows.push(['Total Persons',  tp]);
+    rows.push(['Nikah Guests',   nikahG + both]);
+    rows.push(['Reception Guests', receptionG + both]);
+    rows.push(['Invites Sent',   sent]);
+    rows.push(['Invites Pending', tf - sent]);
+
+    const csv  = '\uFEFF' + [header, ...rows].map(r =>
+      r.map(c => '"' + String(c).replace(/"/g, '""') + '"').join(',')
+    ).join('\n');
+    this._download(csv, 'text/csv', 'GuestList_' + new Date().toISOString().slice(0,10) + '.csv');
+  },
+
+  toPDF() {
+    if (!window.jspdf) { UI.toast('PDF library loading, try again.', 'error'); return; }
+    const { jsPDF } = window.jspdf;
+    const doc  = new jsPDF();
+    const rose = [163,92,74], gold = [212,175,122], grey = [100,100,100];
+    const tf   = App.guests.length;
+    const tp   = App.guests.reduce((a,g) => a + (g.adults||1) + (g.kids||0), 0);
+    let   sent = 0, nikahG = 0, receptionG = 0, both = 0;
+    App.guests.forEach(g => {
+      if (g.inviteType==='nikah') nikahG++;
+      else if (g.inviteType==='reception') receptionG++;
+      else both++;
+      if (g.inviteSent) sent++;
+    });
+
+    /* Header */
+    doc.setFillColor(247,233,229); doc.rect(0,0,210,40,'F');
+    doc.setFontSize(20); doc.setTextColor(...rose);
+    doc.text('Nikah & Reception — Guest Report', 105, 16, { align:'center' });
+    doc.setFontSize(11); doc.setTextColor(...gold);
+    doc.text('Mohd Anas Alam & Ruhi  |  20-21 November 2026', 105, 26, { align:'center' });
+    doc.setFontSize(9); doc.setTextColor(...grey);
+    doc.text('Generated: ' + new Date().toLocaleString('en-IN'), 105, 34, { align:'center' });
+
+    /* Stats */
+    let y = 52;
+    doc.setFontSize(12); doc.setTextColor(...rose);
+    doc.text('SUMMARY STATISTICS', 14, y); y += 8;
+    const stats = [
+      ['Total Families', tf,        'Invites Sent',   sent],
+      ['Total Persons',  tp,        'Invites Pending', tf - sent],
+      ['Nikah Guests',   nikahG+both,'Reception Guests', receptionG+both]
+    ];
+    doc.setFontSize(9); doc.setTextColor(50,50,50);
+    stats.forEach(([la,lv,ra,rv]) => {
+      doc.text(la + ': ' + lv, 14, y);
+      doc.text(ra + ': ' + rv, 110, y);
+      y += 7;
+    });
+
+    y += 4;
+    doc.setDrawColor(...gold); doc.line(14, y, 196, y); y += 8;
+    doc.setFontSize(11); doc.setTextColor(...rose);
+    doc.text('GUEST LIST', 14, y); y += 6;
+
+    /* Table header */
+    doc.setFillColor(247,233,229);
+    doc.rect(14, y-4, 182, 7, 'F');
+    doc.setFontSize(7.5); doc.setTextColor(...rose);
+    const cols = [14,22,65,93,120,138,148,157,165,176];
+    const heads = ['#','Name','Phone','Invited By','Event','Adlt','Kids','Tot','Status'];
+    heads.forEach((h,i) => doc.text(h, cols[i], y));
+    y += 5;
+
+    doc.setTextColor(50,50,50);
+    App.guests.forEach((g, idx) => {
+      if (y > 275) { doc.addPage(); y = 20; }
+      if (idx % 2 === 0) { doc.setFillColor(254,250,246); doc.rect(14,y-3.5,182,6,'F'); }
+      const tp2  = (g.adults||1)+(g.kids||0);
+      const type = g.inviteType==='nikah'?'Nikah':g.inviteType==='reception'?'Reception':'Both';
+      const row  = [String(idx+1), (g.name).substring(0,20), (g.phone||'').substring(0,14),
+                    (g.invitedBy||'').substring(0,14), type, String(g.adults||1),
+                    String(g.kids||0), String(tp2), g.inviteSent?'Sent':'Pending'];
+      row.forEach((v,i) => doc.text(v, cols[i], y));
+      y += 6;
+    });
+
+    doc.save('GuestReport_' + new Date().toISOString().slice(0,10) + '.pdf');
+  },
+
+  _download(content, mimeType, filename) {
+    const blob = new Blob([content], { type: mimeType });
+    const a    = document.createElement('a');
+    a.href     = URL.createObjectURL(blob);
+    a.download = filename;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN AUTH MODULE
+═══════════════════════════════════════════════════════════════ */
+const Auth = {
+  async login() {
+    if (App.loginAttempts >= CONFIG.session.maxAttempts) {
+      this._showError('Too many attempts. Please refresh the page.');
+      return;
+    }
+    const uname = document.getElementById('inp-username').value.trim();
+    const pass  = document.getElementById('inp-password').value;
+    const hash  = await hashPass(pass);
+
+    if (uname === CONFIG.admin.username && hash === CONFIG.admin.passwordHash) {
+      App.loginAttempts  = 0;
+      App.isLoggedIn     = true;
+      document.getElementById('admin-login').style.display = 'none';
+      document.getElementById('admin-panel').style.display = 'block';
+      this._startSession();
+      UI.renderTable();
+    } else {
+      App.loginAttempts++;
+      const rem = CONFIG.session.maxAttempts - App.loginAttempts;
+      this._showError(`Invalid credentials. ${rem} attempt(s) remaining.`);
+    }
+  },
+
+  logout() {
+    if (!confirm('Logout from admin panel?')) return;
+    App.isLoggedIn = false;
+    clearInterval(App.sessionIntervalId);
+    document.getElementById('admin-panel').style.display = 'none';
+    document.getElementById('admin-login').style.display = 'block';
+    document.getElementById('inp-username').value = '';
+    document.getElementById('inp-password').value = '';
+    document.getElementById('btn-wedding-view').click();
+  },
+
+  _startSession() {
+    App.sessionEnd = Date.now() + CONFIG.session.timeoutMs;
+    clearInterval(App.sessionIntervalId);
+    App.sessionIntervalId = setInterval(() => {
+      const rem = App.sessionEnd - Date.now();
+      if (rem <= 0) {
+        clearInterval(App.sessionIntervalId);
+        alert('Session expired. Please login again.');
+        this.logout();
+        return;
+      }
+      const m = Math.floor(rem / 60000);
+      const s = Math.floor((rem % 60000) / 1000);
+      const el = document.getElementById('session-timer');
+      if (el) el.textContent = 'Session: ' + m + 'm ' + pad2(s) + 's';
+    }, 1000);
+    /* Reset timer on any interaction */
+    ['click','keydown','touchstart'].forEach(evt =>
+      document.addEventListener(evt, () => { App.sessionEnd = Date.now() + CONFIG.session.timeoutMs; }, { passive:true })
+    );
+  },
+
+  _showError(msg) {
+    const el = document.getElementById('login-error');
+    if (!el) return;
+    el.textContent    = msg;
+    el.style.display  = 'block';
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+  }
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   VIEW MANAGEMENT & NAVIGATION
+═══════════════════════════════════════════════════════════════ */
+function showWedding() {
+  document.getElementById('wedding-view').style.display = 'block';
+  document.getElementById('admin-view').style.display   = 'none';
+  document.getElementById('btn-wedding-view').classList.add('active');
+  document.getElementById('admin-nav-btn').classList.remove('active');
+  document.getElementById('btn-wedding-view').setAttribute('aria-pressed', 'true');
+  document.getElementById('admin-nav-btn').setAttribute('aria-pressed', 'false');
+}
+
+function showAdmin() {
+  document.getElementById('wedding-view').style.display = 'none';
+  document.getElementById('admin-view').style.display   = 'block';
+  document.getElementById('btn-wedding-view').classList.remove('active');
+  document.getElementById('admin-nav-btn').classList.add('active');
+  document.getElementById('btn-wedding-view').setAttribute('aria-pressed', 'false');
+  document.getElementById('admin-nav-btn').setAttribute('aria-pressed', 'true');
+  if (App.isLoggedIn) UI.renderTable();
+}
+
+function unlockAdminButton() {
+  const btn = document.getElementById('admin-nav-btn');
+  btn.style.display = 'inline-flex';
+  btn.click();
+}
+
+/* ── Event listeners ── */
+document.getElementById('btn-wedding-view').addEventListener('click', showWedding);
+document.getElementById('admin-nav-btn').addEventListener('click', showAdmin);
+document.getElementById('btn-login').addEventListener('click', () => Auth.login());
+document.getElementById('inp-password').addEventListener('keydown', e => { if (e.key === 'Enter') Auth.login(); });
+document.getElementById('btn-logout').addEventListener('click', () => Auth.logout());
+document.getElementById('btn-add-guest').addEventListener('click', () => Guest.add());
+document.getElementById('btn-reset-all').addEventListener('click', () => Guest.resetAll());
+document.getElementById('btn-csv').addEventListener('click', () => Export.toCSV());
+document.getElementById('btn-pdf').addEventListener('click', () => Export.toPDF());
+document.getElementById('btn-share-summary').addEventListener('click', () => WA.shareSummary());
+
+/* Debounced search — O(n) single pass, handles 2000+ guests efficiently */
+['search-input','filter-type','filter-status'].forEach(id => {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.addEventListener('input', () => {
+    clearTimeout(App.searchTimeout);
+    App.searchTimeout = setTimeout(() => UI.renderTable(), 200);
+  });
+});
+
+/* ═══════════════════════════════════════════════════════════════
+   SECRET ADMIN ACCESS — 3 methods
+═══════════════════════════════════════════════════════════════ */
+/* Method 1: URL ?admin=true */
+if (new URLSearchParams(window.location.search).get('admin') === 'true') {
+  document.getElementById('admin-nav-btn').style.display = 'inline-flex';
+}
+
+/* Method 2: Ctrl + Shift + A */
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') unlockAdminButton();
+});
+
+/* Method 3: Triple-click footer */
+(function() {
+  let clicks = 0, timer;
+  document.getElementById('secret-footer').addEventListener('click', () => {
+    clicks++;
+    clearTimeout(timer);
+    timer = setTimeout(() => { clicks = 0; }, 700);
+    if (clicks >= 3) { clicks = 0; unlockAdminButton(); }
+  });
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   COUNTDOWN TIMER
+═══════════════════════════════════════════════════════════════ */
+function updateCountdown() {
+  const now    = new Date();
+  const target = now < CONFIG.dates.nikah ? CONFIG.dates.nikah : CONFIG.dates.reception;
+  const diff   = target - now;
+
+  if (diff <= 0) {
+    ['cd-days','cd-hours','cd-mins','cd-secs'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = '00';
+    });
+    /* Reveal bride after reception */
+    if (!App.brideRevealed && now >= CONFIG.dates.reception) {
+      App.brideRevealed = true;
+      localStorage.setItem(STORAGE_KEYS.brideReveal, 'true');
+      const ov = document.getElementById('bride-overlay');
+      if (ov) ov.style.display = 'none';
+    }
+    return;
+  }
+
+  const days  = Math.floor(diff / 86400000);
+  const hours = Math.floor((diff % 86400000) / 3600000);
+  const mins  = Math.floor((diff % 3600000)  / 60000);
+  const secs  = Math.floor((diff % 60000)    / 1000);
+
+  const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = pad2(v); };
+  set('cd-days', days); set('cd-hours', hours); set('cd-mins', mins); set('cd-secs', secs);
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+/* ═══════════════════════════════════════════════════════════════
+   BRIDE REVEAL LOGIC
+═══════════════════════════════════════════════════════════════ */
+function brideClick() {
+  const now = new Date();
+  if (now >= CONFIG.dates.reception || App.brideRevealed) {
+    const ov = document.getElementById('bride-overlay');
+    if (ov) ov.style.display = 'none';
+  } else {
+    UI.toast('The bride\'s photo will be revealed on Reception Day (21 Nov 2026). Stay blessed!');
+  }
+}
+/* Apply reveal on load if already past date */
+(function() {
+  const now = new Date();
+  if ((now >= CONFIG.dates.reception || App.brideRevealed)) {
+    const ov = document.getElementById('bride-overlay');
+    if (ov) ov.style.display = 'none';
+  }
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   FLOATING PETALS (background ambiance)
+═══════════════════════════════════════════════════════════════ */
+(function() {
+  const layer = document.getElementById('petals-layer');
+  function spawn() {
+    const p  = document.createElement('div');
+    const sz = Math.random() * 14 + 7;
+    p.className = 'petal';
+    p.style.cssText = [
+      'width:'   + sz + 'px',
+      'height:'  + sz + 'px',
+      'left:'    + (Math.random() * 100) + '%',
+      '--pd:'    + (Math.random() * 8 + 12) + 's',
+      '--pdd:'   + (Math.random() * 3) + 's'
+    ].join(';');
+    layer.appendChild(p);
+    setTimeout(() => { if (p.parentNode) p.parentNode.removeChild(p); }, 18000);
+  }
+  for (let i = 0; i < 14; i++) setTimeout(spawn, i * 300);
+  setInterval(spawn, 900);
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   SCROLL REVEAL (IntersectionObserver)
+═══════════════════════════════════════════════════════════════ */
+(function() {
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in-view'); obs.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+})();
+</script>
+</body>
+</html>
